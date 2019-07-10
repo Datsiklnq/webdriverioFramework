@@ -3,10 +3,9 @@ class contactUsPageObject {
     get firstName() { return $("[name='first_name']");}
     get secondName() { return $("[name='last_name']"); }
     get email() { return $("[name='email']"); }
-    get comments() { return $("text area"); }
+    get comments() { return $("textarea"); }
     get submitButton() { return $("[type='submit']"); }
-    get unsuccessfulSubmissionHeader() { return $("body"); }
-    get succssfulSubmissionHeader() { return $("contact_reply h1"); }
+  
 
 
 
@@ -32,37 +31,39 @@ clickSubmitButton() {
     return this.submitButton.click();
 }
 
-submitAllInformationViaContactUsForm(firstName, secondName, emailAdress, comments) {
+submitAllInformationViaContactUsForm(firstName, secondName, email, comments) {
     if (firstName) {
         this.firstName.setValue(firstName);
     }
     if (secondName) {
         this.secondName.setValue(secondName);
     }
-    if (emailAdress) {
+    if (email) {
         this.email.setValue(email);
     }
     if (comments) {
         this.comments.setValue(comments);
     }
     this.submitButton.click();
-    this.confirmSuccessfulSubmission();
+   this.confirmSuccessfulSubmission();
+    
 }
 
-confirmSuccessfulSubmission() {
-
-    var validateSubmissionHeader = browser.waitUntil(function () {
-        return this.confirmSuccessfulSubmission.getText() == 'Thank You for your Message!'
-    }, 3000)
-    expect(validateSubmissionHeader, 'Successful Submission Message does not Exist!').to.be.true;
-}
+ confirmSuccessfulSubmission() {
+    var successfulSubmissionHeader = "#contact_reply h1";
+     var validateSubmissionHeader = browser.waitUntil(function () {
+         return browser.getText(successfulSubmissionHeader) == 'Thank You for your Message!'
+     }, 4000)
+     expect(validateSubmissionHeader, 'Successful Submission Message does not Exist!').to.be.true;
+ }
 
 confrimUnsuccessfulSubmission() {
+    var unsuccessfulSubmissionHeader = 'body';
     var validateSubmissionHeader = browser.waitUntil(function () {
 
-        return this.unsuccessfulSubmissionHeader.getText == 'Error: all fields are required'
+        return browser.getText(unsuccessfulSubmissionHeader) == 'Error: all fields are required'
     }, 3000)
-    expect(this.unsuccessfulSubmissionHeader.getText()).to.include('Error: all fields are required');
+    expect(browser.getText(unsuccessfulSubmissionHeader)).to.include('Error: all fields are required');
 }
 }
 module.exports = new contactUsPageObject();
